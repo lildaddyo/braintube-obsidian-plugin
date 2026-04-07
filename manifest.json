@@ -1,0 +1,10 @@
+{
+  "id": "braintube-sync",
+  "name": "BrainTube Sync",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Sync your Obsidian vault to BrainTube for semantic search across all your knowledge.",
+  "author": "VR Express",
+  "authorUrl": "https://braintube.app",
+  "isDesktopOnly": false
+}
