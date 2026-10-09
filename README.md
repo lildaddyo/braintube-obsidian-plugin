@@ -90,7 +90,7 @@ Use the command palette: `BrainTube: Sync vault (dry run)` to see how many notes
 
 ### Exclude Folders
 
-Enter a comma-separated list of folder names to skip (e.g. `Templates,Archive,Private`). Notes inside those folders will not be sent to BrainTube.
+Enter a comma-separated list of folder names to skip (e.g. `Templates,Archive,Private`). Notes inside those folders will not be sent to BrainTube. Matching ignores case and leading/trailing slashes, and a bare name such as `Private` also matches a nested folder (`Journal/Private`). Use a path such as `Journal/Private` to match only that one folder. The settings tab shows how many notes are excluded.
 
 ---
 

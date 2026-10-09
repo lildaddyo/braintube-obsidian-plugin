@@ -51,13 +51,28 @@ function parseTags(cache: CachedMetadata | null): string[] {
 
 // ─── File filter ────────────────────────────────────────────────────────────
 
-function isExcluded(filePath: string, excludeFolders: string): boolean {
+// Normalise a folder entry or vault path: forward slashes, no leading or
+// trailing slashes, lower-case. So "Private/", "/Private" and "private" all
+// match a folder named "Private".
+function normaliseFolderPath(p: string): string {
+  return p.trim().replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').toLowerCase();
+}
+
+export function isExcluded(filePath: string, excludeFolders: string): boolean {
   if (!excludeFolders.trim()) return false;
+  const path = normaliseFolderPath(filePath);
+  // Folder segments of the file (everything except the file name).
+  const segments = path.split('/').slice(0, -1);
   return excludeFolders
     .split(',')
-    .map(f => f.trim())
+    .map(normaliseFolderPath)
     .filter(Boolean)
-    .some(folder => filePath.startsWith(folder + '/') || filePath === folder);
+    .some(folder => {
+      // A folder path ("Journal/Private") matches as a prefix from the vault root.
+      if (path === folder || path.startsWith(folder + '/')) return true;
+      // A bare folder name ("Private") matches that folder at any depth.
+      return !folder.includes('/') && segments.includes(folder);
+    });
 }
 
 // ─── HTTP helper ────────────────────────────────────────────────────────────
