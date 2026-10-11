@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import type BrainTubePlugin from './main';
+import { countVaultNotes } from './sync';
 
 // ─── Settings interface ───────────────────────────────────────────────────────
 
@@ -64,18 +65,27 @@ export class BrainTubeSettingTab extends PluginSettingTab {
       });
 
     // ── Exclude Folders ────────────────────────────────────────────────────────
-    new Setting(containerEl)
+    const excludeDesc = 'Comma-separated folder names to skip (e.g. "Templates,Archive,Private"). '
+      + 'Case-insensitive; a name matches that folder at any depth.';
+    const excludeSetting = new Setting(containerEl)
       .setName('Exclude Folders')
-      .setDesc('Comma-separated folder names to skip (e.g. "Templates,Archive,Private").')
-      .addText(text =>
-        text
-          .setPlaceholder('Templates,Archive')
-          .setValue(this.plugin.settings.excludeFolders)
-          .onChange(async (value) => {
-            this.plugin.settings.excludeFolders = value;
-            await this.plugin.saveSettings();
-          })
-      );
+      .setDesc(excludeDesc);
+    const excludeCountEl = excludeSetting.descEl.createDiv();
+    const updateExcludeCount = () => {
+      const { total, excluded } = countVaultNotes(this.app, this.plugin.settings.excludeFolders);
+      excludeCountEl.textContent = `${excluded} notes excluded, ${total} will sync.`;
+    };
+    updateExcludeCount();
+    excludeSetting.addText(text =>
+      text
+        .setPlaceholder('Templates,Archive')
+        .setValue(this.plugin.settings.excludeFolders)
+        .onChange(async (value) => {
+          this.plugin.settings.excludeFolders = value;
+          await this.plugin.saveSettings();
+          updateExcludeCount();
+        })
+    );
 
     // ── Batch Size ─────────────────────────────────────────────────────────────
     new Setting(containerEl)
