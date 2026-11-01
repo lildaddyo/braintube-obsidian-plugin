@@ -29,7 +29,7 @@ Once synced, you can ask BrainTube natural-language questions and it will search
 
 ## Installation
 
-> The plugin is not yet listed in the Obsidian Community Plugins directory. Install manually using the steps below.
+> Community Plugins listing is under review. Until it is live, install manually using the steps below.
 
 ### Manual installation
 
